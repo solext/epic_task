@@ -5,8 +5,6 @@ VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestWindow", "TestWindow\TestWindow.csproj", "{A387B5D4-B606-47CB-86E0-FA0CF369F82B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StickyWindowLibrary", "StickyWindowLibrary\StickyWindowLibrary.csproj", "{AF76FEA7-CD9D-4093-B617-BC9C44DE99C6}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -17,24 +15,8 @@ Global
 		{A387B5D4-B606-47CB-86E0-FA0CF369F82B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A387B5D4-B606-47CB-86E0-FA0CF369F82B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A387B5D4-B606-47CB-86E0-FA0CF369F82B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{AF76FEA7-CD9D-4093-B617-BC9C44DE99C6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{AF76FEA7-CD9D-4093-B617-BC9C44DE99C6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{AF76FEA7-CD9D-4093-B617-BC9C44DE99C6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{AF76FEA7-CD9D-4093-B617-BC9C44DE99C6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 3
-		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
-		SccTeamFoundationServer = https://zeoteam.visualstudio.com/
-		SccLocalPath0 = .
-		SccProjectUniqueName1 = TestWindow\\TestWindow.csproj
-		SccProjectName1 = TestWindow
-		SccLocalPath1 = TestWindow
-		SccProjectUniqueName2 = StickyWindowLibrary\\StickyWindowLibrary.csproj
-		SccProjectName2 = StickyWindowLibrary
-		SccLocalPath2 = StickyWindowLibrary
 	EndGlobalSection
 EndGlobal

@@ -178,7 +178,7 @@ namespace Blue.Windows
 		#endregion
 
 		// public properties
-		private static int	stickGap = 5;		// distance to stick
+		private static int	stickGap = 0;		// distance to stick
 		private bool		stickOnResize;
 		private bool		stickOnMove;
 		private bool		stickToScreen;

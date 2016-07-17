@@ -28,7 +28,6 @@ namespace TestWindow
             
             var child = new StickerWindow(this);
             child.Show();
-            StickyWindow.RegisterExternalReferenceForm(this);
         }
 
         

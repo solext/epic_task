@@ -19,31 +19,42 @@ namespace TestWindow.View
     /// </summary>
     public partial class StickerWindow : Window
     {
-        private StickyWindow StickyWindow;
+        public bool Rside = false;
         //private Window _parent;
         public StickerWindow(Window parent)
         {
             InitializeComponent();
             Owner = parent;
             Owner.LocationChanged += loc_LocationChanged;
-            Owner.SizeChanged += Window_SizeChanged;
-            this.Loaded += StickerWindowLoaded;
-            
+            Owner.SizeChanged += Window_SizeChanged; 
+
+            this.LocationChanged += loc_LocationChanged_StW;
             //_parent = parent;
         }
 
-        private void StickerWindowLoaded(object sender, RoutedEventArgs e)
+        private void loc_LocationChanged_StW(object sender, EventArgs e)
         {
-            StickyWindow = new StickyWindow(this);
-            StickyWindow.StickToScreen = true;
-            StickyWindow.StickToOther = true;
-            StickyWindow.StickOnResize = true;
-            StickyWindow.StickOnMove = true;
+            if (this.Left > Owner.Left + Owner.ActualWidth/2)
+            {
+                Rside = true;
+            }
+            else
+            {
+                Rside = false;
+            }
         }
 
         private void loc_LocationChanged(object sender, EventArgs e)
         {
-            Left = Owner.Left + Owner.ActualWidth;
+            if (Rside)
+            {
+                Left = Owner.Left + Owner.ActualWidth - 15;
+            }
+            else
+            {
+                Left = Owner.Left - this.ActualWidth + 15;
+            }
+            //}
             Top = Owner.Top;
             Height = Owner.Height;
         }
@@ -51,7 +62,22 @@ namespace TestWindow.View
         private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             Height = Owner.Height;
-            Width = Width;
+            try
+            {
+                if (Rside)
+                {
+                    Width = Width - (e.PreviousSize.Width - e.NewSize.Width);
+                }
+                else
+                {
+                    Width = Width - (e.PreviousSize.Width - e.NewSize.Width);
+                }
+            }
+            catch (System.ArgumentException)
+            {
+
+            }
+
             loc_LocationChanged(sender, null);
         }
     }

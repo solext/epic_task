@@ -106,12 +106,6 @@
   <ItemGroup>
     <Folder Include="Model\" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\StickyWindowLibrary\StickyWindowLibrary.csproj">
-      <Project>{af76fea7-cd9d-4093-b617-bc9c44de99c6}</Project>
-      <Name>StickyWindowLibrary</Name>
-    </ProjectReference>
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
