@@ -1,5 +1,4 @@
-﻿using Blue.Windows;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,6 +10,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using TestWindow.ViewModel;
 
 namespace TestWindow.View
 {
@@ -21,14 +21,15 @@ namespace TestWindow.View
     {
         public bool Rside = false;
         //private Window _parent;
-        public StickerWindow(Window parent)
+        public StickerWindow()
         {
             InitializeComponent();
-            Owner = parent;
-            Owner.LocationChanged += loc_LocationChanged;
-            Owner.SizeChanged += Window_SizeChanged; 
+            this.DataContext = new StickerWindowVM();
+            //Owner = parent;
+            //Owner.LocationChanged += loc_LocationChanged;
+            //Owner.SizeChanged += Window_SizeChanged; 
 
-            this.LocationChanged += loc_LocationChanged_StW;
+            //this.LocationChanged += loc_LocationChanged_StW;
             //_parent = parent;
         }
 

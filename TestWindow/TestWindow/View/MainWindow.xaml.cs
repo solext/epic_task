@@ -1,5 +1,4 @@
-﻿using Blue.Windows;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -26,8 +25,8 @@ namespace TestWindow
             InitializeComponent();
             Show();
             
-            var child = new StickerWindow(this);
-            child.Show();
+            //var child = new StickerWindow(this);
+            //child.Show();
         }
 
         
