@@ -5,6 +5,8 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Windows;
+using TestTestWindow.WinAPIAndHooks;
+using TestWindow.WinAPIAndHooks;
 
 namespace TestWindow.ViewModel
 {
@@ -14,8 +16,8 @@ namespace TestWindow.ViewModel
 
         public Command UpdateAppsCmd { get; set; }
 
-        private List<string> _RunningAps { get; set; }
-        public List<string> RunningAps
+        private Dictionary<IntPtr,string> _RunningAps { get; set; }
+        public Dictionary<IntPtr, string> RunningAps
         {
             get
             {
@@ -37,41 +39,42 @@ namespace TestWindow.ViewModel
                 _SelectedProcess = value; PropertyChanged(this, new PropertyChangedEventArgs("SelectedProcess"));
             }
         }
-        private string _SelectedProcessStr { get; set; }
-        public string SelectedProcessStr
+        private IntPtr _HWND { get; set; }
+        public IntPtr HWND
         {
             get
             {
-                return _SelectedProcessStr;
+                return _HWND;
             }
             set
             {
-                _SelectedProcessStr = value;
-                PropertyChanged(this, new PropertyChangedEventArgs("SelectedProcessStr"));
-                SelectedProcess = Process.GetProcessesByName(SelectedProcessStr)[0];
-                Win32WindowEvents.StartListening(Convert.ToUInt32(SelectedProcess.Id));
+                _HWND = value;
+                PropertyChanged(this, new PropertyChangedEventArgs("HWND"));
+                //SelectedProcess = Process.GetProcessesByName(SelectedProcessStr)[0];
+                WinApi.GlobalWindowEvent += Win32WindowEvents_GlobalWindowEvent;
+                WinApi.StartListening(_HWND);
             }
         }
         public StickerWindowVM()
         {
-            this.RunningAps = new List<string>();
+            this.RunningAps = new Dictionary<IntPtr, string>();
             this.UpdateAppsCmd = new Command(UpdateApps);
             UpdateApps(null);
-            Win32WindowEvents.GlobalWindowEvent += Win32WindowEvents_GlobalWindowEvent;
         }
 
 
-        void Win32WindowEvents_GlobalWindowEvent(Process Process, Win32Window Window, Win32WindowEvents.EventTypes type)
+        private void Win32WindowEvents_GlobalWindowEvent(int Process,
+            WindowPosition Window, WinAPIAdditionalTypes.EventTypes type)
         {
                 Console.WriteLine(type + "@ " + DateTime.Now.ToString("hh:mm.ss.fff") + Window.ToString() + "\n");
         }
 
         private void UpdateApps(object obj)
         {
-            Process[] MyProcess = Process.GetProcesses().OrderBy(x => x.ProcessName).Where(x => x.MainWindowHandle != IntPtr.Zero).ToArray();
-            for (int i = 0; i < MyProcess.Length; i++)
-                RunningAps.Add(MyProcess[i].ProcessName);
-
+            //Process[] MyProcess = Process.GetProcesses().OrderBy(x => x.ProcessName).Where(x => x.MainWindowHandle != IntPtr.Zero).ToArray();
+            //for (int i = 0; i < MyProcess.Length; i++)
+            //    RunningAps.Add(MyProcess[i].ProcessName);
+            RunningAps = WinApi.GetOpenWindows();
 
             //comboBox1.SelectedIndexChanged += comboBox1_SelectedIndexChanged;
             //treeView1.AfterSelect += treeView1_AfterSelect;
