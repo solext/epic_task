@@ -11,6 +11,9 @@ using static TestWindow.WinAPIAndHooks.WinAPIAdditionalTypes;
 
 namespace TestWindow.ViewModel
 {
+    /// <summary>
+    /// /
+    /// </summary>
     public class StickerWindowVM : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged = delegate { };
