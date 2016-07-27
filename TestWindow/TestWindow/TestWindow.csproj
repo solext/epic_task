@@ -74,7 +74,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Command.cs" />
+    <Compile Include="EventsStickerWindow\EventsStickerWindow.cs" />
+    <Compile Include="ViewModel\Command.cs" />
     <Compile Include="ViewModel\StickerWindowVM.cs" />
     <Compile Include="View\StickerWindow.xaml.cs">
       <DependentUpon>StickerWindow.xaml</DependentUpon>

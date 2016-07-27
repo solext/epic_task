@@ -24,7 +24,7 @@ namespace TestWindow.View
         public StickerWindow()
         {
             InitializeComponent();
-            this.DataContext = new StickerWindowVM();
+            //this.DataContext = new StickerWindowVM();
             //Owner = parent;
             //Owner.LocationChanged += loc_LocationChanged;
             //Owner.SizeChanged += Window_SizeChanged; 
