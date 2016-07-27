@@ -24,7 +24,7 @@ namespace TestWindow.View
         public StickerWindow()
         {
             InitializeComponent();
-            this.DataContext = new StickerWindowVM();
+            //this.DataContext = new StickerWindowVM();
             //Owner = parent;
             //Owner.LocationChanged += loc_LocationChanged;
             //Owner.SizeChanged += Window_SizeChanged; 
@@ -80,6 +80,11 @@ namespace TestWindow.View
             }
 
             loc_LocationChanged(sender, null);
+        }
+
+        private void loc_StateChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }

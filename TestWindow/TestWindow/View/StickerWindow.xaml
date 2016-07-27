@@ -5,9 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TestWindow.View"
         mc:Ignorable="d"
-        Title="StickerWindow" Height="300" Width="300" >
+        Title="StickerWindow" Height="300" Width="300" StateChanged="loc_StateChanged" >
     <Grid>
-        <ComboBox x:Name="AppsComboBox" VerticalAlignment="Top" SelectedValue="{Binding SelectedProcessStr}" ItemsSource="{Binding RunningAps}" Margin="10,10,82,0" Height="20"/>
+        <ComboBox x:Name="AppsComboBox" VerticalAlignment="Top" DisplayMemberPath="Value" SelectedValuePath="Key" SelectedValue="{Binding HWND}" ItemsSource="{Binding RunningAps}" Margin="10,10,82,0" Height="20"/>
         <Button x:Name="RefreshBtn" Content="Refresh" Command="{Binding UpdateAppsCmd}" VerticalAlignment="Top" Margin="215,10,10,0"/>
     </Grid>
 </Window>

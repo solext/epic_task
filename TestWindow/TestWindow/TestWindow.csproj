@@ -74,12 +74,18 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Command.cs" />
+    <Compile Include="Events\StickerWindowEvents.cs" />
+    <Compile Include="Events\TargetWindowEvents.cs" />
+    <Compile Include="Events\WindowEvents.cs" />
+    <Compile Include="ViewModel\Command.cs" />
     <Compile Include="ViewModel\StickerWindowVM.cs" />
     <Compile Include="View\StickerWindow.xaml.cs">
       <DependentUpon>StickerWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Win32Controls.cs" />
+    <Compile Include="WinAPIAndHooks\WinAPI.cs" />
+    <Compile Include="WinAPIAndHooks\WinAPIAdditionalTypes.cs" />
+    <Compile Include="WinAPIAndHooks\WinAPIFunctions.cs" />
+    <Compile Include="WinAPIAndHooks\WindowPosition.cs" />
     <Page Include="View\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
