@@ -78,6 +78,7 @@
     <Compile Include="Events\TargetWindowEvents.cs" />
     <Compile Include="Events\WindowEvents.cs" />
     <Compile Include="ViewModel\Command.cs" />
+    <Compile Include="ViewModel\EnumBooleanConverter.cs" />
     <Compile Include="ViewModel\StickerWindowVM.cs" />
     <Compile Include="View\StickerWindow.xaml.cs">
       <DependentUpon>StickerWindow.xaml</DependentUpon>

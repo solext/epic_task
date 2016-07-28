@@ -14,6 +14,7 @@ namespace TestWindow.ViewModel
     public class StickerWindowVM : INotifyPropertyChanged
     {
         private TargetWindowEvents targetWindowEvents;
+        private StickerWindowEvents stickerWindowEvents;
         public event PropertyChangedEventHandler PropertyChanged = delegate { };
 
         public Command UpdateAppsCmd { get; set; }
@@ -46,6 +47,7 @@ namespace TestWindow.ViewModel
             set
             {
                 _StickerPosition = value; PropertyChanged(this, new PropertyChangedEventArgs("StikerPosition"));
+                stickerWindowEvents.StickToTargetWindow(_HWND, StikerPosition);
             }
         }
         private Dictionary<IntPtr, string> _RunningAps { get; set; }
@@ -83,6 +85,7 @@ namespace TestWindow.ViewModel
             {
                 _HWND = value;
                 PropertyChanged(this, new PropertyChangedEventArgs("HWND"));
+                stickerWindowEvents.StickToTargetWindow(_HWND, StikerPosition);
                 WinApi.GlobalWindowEvent += Win32WindowEvents_GlobalWindowEvent;
                 WinApi.StartListening(_HWND);
             }
@@ -90,9 +93,8 @@ namespace TestWindow.ViewModel
         public StickerWindowVM(Window stickerWindow)
         {
             WindowEvents.InitializationStickerWindow(stickerWindow);
-            var stickerWindowEvents = new StickerWindowEvents();
             targetWindowEvents = new TargetWindowEvents();
-
+            stickerWindowEvents = new StickerWindowEvents();
             stickerWindow.StateChanged += stickerWindowEvents.StateChange;
             RunningAps = new Dictionary<IntPtr, string>();
             UpdateAppsCmd = new Command(UpdateApps);
