@@ -1,33 +1,47 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
-using TestWindow.WinAPIAndHooks;
 
-namespace TestTestWindow.WinAPIAndHooks
+namespace TestWindow.WinAPIAndHooks
 {
     internal class WinApi
     {
-        static IntPtr hhook;
+        static IntPtr _hhook;
         private static IntPtr _hwnd;
-        static WinAPIFunctions.WinEventDelegate procDelegate = new WinAPIFunctions.WinEventDelegate(WinEventProc);
+        static readonly WinApiFunctions.WinEventDelegate ProcDelegate = WinEventProc;
 
-        public delegate void WinEvent(int Process, WindowPosition Window, WinAPIAdditionalTypes.EventTypes type);
+        public delegate void WinEvent(int process, TargetWindow window, WinApiAdditionalTypes.EventTypes type);
         public static event WinEvent GlobalWindowEvent;
 
         public static void StartListening(IntPtr hwnd)
         {
             _hwnd = hwnd;
-            WindowPosition Window = new WindowPosition(hwnd);
-            hhook = WinAPIFunctions.SetWinEventHook((uint)WinAPIAdditionalTypes.EventTypes.EVENT_MIN, (uint)WinAPIAdditionalTypes.EventTypes.EVENT_MAX, IntPtr.Zero,
-                    procDelegate, (uint)Window.Process, 0, (uint)(WinAPIAdditionalTypes.WinHookParameter.OUTOFCONTEXT));
+            TargetWindow window = new TargetWindow(hwnd);
+            if (_hhook != IntPtr.Zero) StopListening();
+            _hhook = WinApiFunctions.SetWinEventHook(
+                (uint)WinApiAdditionalTypes.EventTypes.EVENT_MIN,
+                (uint)WinApiAdditionalTypes.EventTypes.EVENT_MAX,
+                IntPtr.Zero,
+                ProcDelegate,
+                (uint)window.Process,
+                0,
+                (uint)(WinApiAdditionalTypes.WinHookParameter.OUTOFCONTEXT));
+            WinApiFunctions.ShowWindow(
+                            hwnd, (int)WinApiAdditionalTypes.WindowShowStyle.Restore);
+
+            WinApiFunctions.SetWindowPos(
+                 _hwnd, 0, 0, 0, 0, 0,
+                 (uint)(WinApiAdditionalTypes.SetWindowPosFlags.SWP_NOMOVE
+                 | WinApiAdditionalTypes.SetWindowPosFlags.SWP_NOSIZE));
+
+            Console.WriteLine(Marshal.GetLastWin32Error());
         }
         static void WinEventProc(IntPtr hWinEventHook, uint eventType, IntPtr hwnd, int idObject, int idChild, uint dwEventThread, uint dwmsEventTime)
         {
             if (hwnd == _hwnd)
             {
-                WindowPosition Window = new WindowPosition(hwnd);
+                TargetWindow window = new TargetWindow(hwnd);
 
                 ////if window is found fire event
                 //if (predicate != null && predicate.Invoke(Window) == true)
@@ -39,30 +53,30 @@ namespace TestTestWindow.WinAPIAndHooks
 
                 if (GlobalWindowEvent != null)
                 {
-                    GlobalWindowEvent(Window.Process, Window, (WinAPIAdditionalTypes.EventTypes) eventType);
+                    GlobalWindowEvent(window.Process, window, (WinApiAdditionalTypes.EventTypes)eventType);
                 }
             }
         }
         public static void StopListening()
         {
-            WinAPIFunctions.UnhookWinEvent(hhook);
+            WinApiFunctions.UnhookWinEvent(_hhook);
         }
 
         public static Dictionary<IntPtr, string> GetOpenWindows()
         {
-            var lShellWindow = WinAPIFunctions.GetShellWindow();
+            var lShellWindow = WinApiFunctions.GetShellWindow();
             var lWindows = new Dictionary<IntPtr, string>();
 
-            WinAPIFunctions.EnumWindows(delegate(IntPtr hWnd, int lParam)
+            WinApiFunctions.EnumWindows(delegate(IntPtr hWnd, int lParam)
             {
                 if (hWnd == lShellWindow) return true;
-                if (!WinAPIFunctions.IsWindowVisible(hWnd)) return true;
+                if (!WinApiFunctions.IsWindowVisible(hWnd)) return true;
 
-                var lLength = WinAPIFunctions.GetWindowTextLength(hWnd);
+                var lLength = WinApiFunctions.GetWindowTextLength(hWnd);
                 if (lLength == 0) return true;
 
                 var lBuilder = new StringBuilder(lLength);
-                WinAPIFunctions.GetWindowText(hWnd, lBuilder, lLength + 1);
+                WinApiFunctions.GetWindowText(hWnd, lBuilder, lLength + 1);
 
                 lWindows[hWnd] = lBuilder.ToString();
                 return true;

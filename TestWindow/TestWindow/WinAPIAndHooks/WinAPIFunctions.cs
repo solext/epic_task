@@ -4,7 +4,7 @@ using System.Text;
 
 namespace TestWindow.WinAPIAndHooks
 {
-    internal class WinAPIFunctions
+    internal class WinApiFunctions
     {
         public delegate void WinEventDelegate(
             IntPtr hWinEventHook, uint eventType, IntPtr hwnd, int idObject, int idChild, uint dwEventThread,
@@ -22,7 +22,7 @@ namespace TestWindow.WinAPIAndHooks
         public static extern int GetWindowThreadProcessId(IntPtr hWnd, out int lpdwProcessId);
 
         [DllImport("user32.dll")]
-        public static extern bool GetWindowRect(IntPtr hWnd, out WinAPIAdditionalTypes.RECT lpRec);
+        public static extern bool GetWindowRect(IntPtr hWnd, out WinApiAdditionalTypes.RECT lpRec);
 
         [DllImport("USER32.DLL")]
         public static extern bool IsWindowVisible(IntPtr hWnd);
@@ -36,5 +36,19 @@ namespace TestWindow.WinAPIAndHooks
 
         [DllImport("USER32.DLL")]
         public static extern int GetWindowTextLength(IntPtr hWnd);
+        [DllImport("USER32.DLL")]
+        public static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
+        [DllImport("USER32.DLL")]
+        public static extern bool SetWindowPos(
+            IntPtr hWnd, int hWndInsertAfter, int X, int Y, int cx, int cy, uint uFlags);
+        [DllImport("USER32.DLL")]
+        public static extern bool SetForegroundWindow(IntPtr hWnd);
+        [DllImport("USER32.DLL")]
+        public static extern bool LockSetForegroundWindow(uint uLockCode);
+        [DllImport("USER32.DLL")]
+        public static extern bool SetActiveWindow(IntPtr hWnd);
+        [DllImport("user32.dll", SetLastError = true)]
+        public static extern bool SetWindowPlacement(IntPtr hWnd,
+           ref WinApiAdditionalTypes.WINDOWPLACEMENT lpwndpl);
     }
 }

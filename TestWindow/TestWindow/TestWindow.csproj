@@ -85,7 +85,7 @@
     <Compile Include="WinAPIAndHooks\WinAPI.cs" />
     <Compile Include="WinAPIAndHooks\WinAPIAdditionalTypes.cs" />
     <Compile Include="WinAPIAndHooks\WinAPIFunctions.cs" />
-    <Compile Include="WinAPIAndHooks\WindowPosition.cs" />
+    <Compile Include="WinAPIAndHooks\TargetWindow.cs" />
     <Page Include="View\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

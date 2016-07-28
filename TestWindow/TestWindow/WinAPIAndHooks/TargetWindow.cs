@@ -2,7 +2,7 @@
 
 namespace TestWindow.WinAPIAndHooks
 {
-    internal class WindowPosition
+    internal class TargetWindow
     {
         public IntPtr hWnd;
 
@@ -10,7 +10,7 @@ namespace TestWindow.WinAPIAndHooks
         /// dgfvdsgfe
         /// </summary>
         /// <param name="hWnd"></param>
-        public WindowPosition(IntPtr hWnd)
+        public TargetWindow(IntPtr hWnd)
         {
             this.hWnd = new IntPtr(hWnd.ToInt32());
         }
@@ -26,12 +26,12 @@ namespace TestWindow.WinAPIAndHooks
         }
 
 
-        public WinAPIAdditionalTypes.RECT Position
+        public WinApiAdditionalTypes.RECT Position
         {
             get
             {
-                WinAPIAdditionalTypes.RECT rect = new WinAPIAdditionalTypes.RECT();
-                WinAPIFunctions.GetWindowRect(hWnd, out rect);
+                WinApiAdditionalTypes.RECT rect;
+                WinApiFunctions.GetWindowRect(hWnd, out rect);
                 return rect;
 
             }
@@ -44,7 +44,7 @@ namespace TestWindow.WinAPIAndHooks
             get
             {
                 int pid;
-                WinAPIFunctions.GetWindowThreadProcessId(hWnd, out pid);
+                WinApiFunctions.GetWindowThreadProcessId(hWnd, out pid);
                 return pid;
             }
         }

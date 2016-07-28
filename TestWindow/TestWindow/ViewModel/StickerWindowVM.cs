@@ -2,13 +2,9 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
 using System.Windows;
-using TestTestWindow.WinAPIAndHooks;
 using TestWindow.Events;
 using TestWindow.WinAPIAndHooks;
-using static TestWindow.WinAPIAndHooks.WinAPIAdditionalTypes;
 
 namespace TestWindow.ViewModel
 {
@@ -34,7 +30,24 @@ namespace TestWindow.ViewModel
         //        _StickerWindow = value; PropertyChanged(this, new PropertyChangedEventArgs("StickerWindow"));
         //    }
         //}
+        public enum StickerPositionType
+        {
+            Left,
+            Right
+        }
+        private StickerPositionType _StickerPosition { get; set; }
 
+        public StickerPositionType StikerPosition
+        {
+            get
+            {
+                return _StickerPosition;
+            }
+            set
+            {
+                _StickerPosition = value; PropertyChanged(this, new PropertyChangedEventArgs("StikerPosition"));
+            }
+        }
         private Dictionary<IntPtr, string> _RunningAps { get; set; }
         public Dictionary<IntPtr, string> RunningAps
         {
@@ -70,7 +83,6 @@ namespace TestWindow.ViewModel
             {
                 _HWND = value;
                 PropertyChanged(this, new PropertyChangedEventArgs("HWND"));
-                //SelectedProcess = Process.GetProcessesByName(SelectedProcessStr)[0];
                 WinApi.GlobalWindowEvent += Win32WindowEvents_GlobalWindowEvent;
                 WinApi.StartListening(_HWND);
             }
@@ -82,25 +94,25 @@ namespace TestWindow.ViewModel
             targetWindowEvents = new TargetWindowEvents();
 
             stickerWindow.StateChanged += stickerWindowEvents.StateChange;
-            this.RunningAps = new Dictionary<IntPtr, string>();
-            this.UpdateAppsCmd = new Command(UpdateApps);
+            RunningAps = new Dictionary<IntPtr, string>();
+            UpdateAppsCmd = new Command(UpdateApps);
             UpdateApps(null);
         }
         
-        private void Win32WindowEvents_GlobalWindowEvent(int Process,
-            WindowPosition Window, EventTypes type)
+        private void Win32WindowEvents_GlobalWindowEvent(int process,
+            TargetWindow window, WinApiAdditionalTypes.EventTypes type)
         {
-            Console.WriteLine(type + "@ " + DateTime.Now.ToString("hh:mm.ss.fff") + Window.ToString() + "\n");
+            //Console.WriteLine(type + "@ " + DateTime.Now.ToString("hh:mm.ss.fff") + window.ToString() + "\n");
             switch (type)
             {
-                case EventTypes.EVENT_SYSTEM_MOVESIZEEND:
+                case WinApiAdditionalTypes.EventTypes.EVENT_SYSTEM_MOVESIZEEND:
                     break;
-                case EventTypes.EVENT_OBJECT_STATECHANGE:
+                case WinApiAdditionalTypes.EventTypes.EVENT_OBJECT_STATECHANGE:
                     break;
-                case EventTypes.EVENT_SYSTEM_MINIMIZESTART:
+                case WinApiAdditionalTypes.EventTypes.EVENT_SYSTEM_MINIMIZESTART:
                     targetWindowEvents.MinimazeStart();
                     break;
-                case EventTypes.EVENT_SYSTEM_MINIMIZEEND:
+                case WinApiAdditionalTypes.EventTypes.EVENT_SYSTEM_MINIMIZEEND:
                     targetWindowEvents.MinimazeEnd();
                     break;
             }
