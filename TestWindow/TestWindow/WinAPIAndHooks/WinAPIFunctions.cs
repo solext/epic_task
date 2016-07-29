@@ -60,5 +60,10 @@ namespace TestWindow.WinAPIAndHooks
          public static extern bool IsIconic(IntPtr hWnd);
          [DllImport("user32.dll", SetLastError = true)]
          public static extern bool CloseWindow(IntPtr hWnd);
+         [DllImport("user32.dll", SetLastError = true)]
+         public static extern bool DestroyWindow(IntPtr hWnd);
+         [DllImport("user32.dll")]
+         public static extern int SendMessage(int hWnd, uint Msg, int wParam, int lParam);
+          
     }
 }
