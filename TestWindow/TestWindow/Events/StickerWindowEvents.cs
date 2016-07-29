@@ -49,22 +49,23 @@ namespace TestWindow.Events
         {
             if (Hwnd == IntPtr.Zero) return;
             if (_stickerWindow.Left<0-_stickerWindow.Width) return;
+            TargetWindow targetWindow=new TargetWindow(Hwnd);
             if (StickerPosition == StickerWindowVM.StickerPositionType.Left)
             {
-                double left = _stickerWindow.Left+_stickerWindow.Width;
-                TargetWindow targetWindow=new TargetWindow(Hwnd);
+                double left = _stickerWindow.Left+_stickerWindow.Width-15;
+                
                 WinApiFunctions.SetWindowPos(Hwnd, 0,(int) left, (int) _stickerWindow.Top,
                     targetWindow.Width, (int)_stickerWindow.Height, 
                     (uint)WinApiAdditionalTypes.SetWindowPosFlags.SWP_NOACTIVATE);
             }
             else
             {
-                TargetWindow targetWindow = new TargetWindow(Hwnd);
                 double left = _stickerWindow.Left -targetWindow.Width;
-                WinApiFunctions.SetWindowPos(Hwnd, 0, (int)left, (int)_stickerWindow.Top,
+                WinApiFunctions.SetWindowPos(Hwnd, 0, (int)left+15, (int)_stickerWindow.Top,
                     targetWindow.Width, (int)_stickerWindow.Height,
                     (uint)WinApiAdditionalTypes.SetWindowPosFlags.SWP_NOACTIVATE);
             }
+            _stickerWindow.Height = targetWindow.Height;
         }
 
     }
