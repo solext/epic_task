@@ -50,5 +50,15 @@ namespace TestWindow.WinAPIAndHooks
         [DllImport("user32.dll", SetLastError = true)]
         public static extern bool SetWindowPlacement(IntPtr hWnd,
            ref WinApiAdditionalTypes.WINDOWPLACEMENT lpwndpl);
+
+        [DllImport("user32.dll", SetLastError = true)]
+        public static extern IntPtr GetDesktopWindow();
+
+         [DllImport("user32.dll", SetLastError = true)]
+        public static extern bool IsZoomed(IntPtr hWnd);
+         [DllImport("user32.dll", SetLastError = true)]
+         public static extern bool IsIconic(IntPtr hWnd);
+         [DllImport("user32.dll", SetLastError = true)]
+         public static extern bool CloseWindow(IntPtr hWnd);
     }
 }

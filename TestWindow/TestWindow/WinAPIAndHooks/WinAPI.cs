@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
 using System.Text;
 
 namespace TestWindow.WinAPIAndHooks
@@ -27,34 +26,35 @@ namespace TestWindow.WinAPIAndHooks
                 (uint)window.Process,
                 0,
                 (uint)(WinApiAdditionalTypes.WinHookParameter.OUTOFCONTEXT));
+           RestoreWindow();
+        }
+
+        public static void RestoreWindow()
+        {
             WinApiFunctions.ShowWindow(
-                            hwnd, (int)WinApiAdditionalTypes.WindowShowStyle.Restore);
+                           _hwnd, (int)WinApiAdditionalTypes.WindowShowStyle.Restore);
 
             WinApiFunctions.SetWindowPos(
                  _hwnd, 0, 0, 0, 0, 0,
                  (uint)(WinApiAdditionalTypes.SetWindowPosFlags.SWP_NOMOVE
                  | WinApiAdditionalTypes.SetWindowPosFlags.SWP_NOSIZE));
-
-            Console.WriteLine(Marshal.GetLastWin32Error());
         }
         static void WinEventProc(IntPtr hWinEventHook, uint eventType, IntPtr hwnd, int idObject, int idChild, uint dwEventThread, uint dwmsEventTime)
         {
-            if (hwnd == _hwnd)
+            if (hwnd != _hwnd) return;
+            var window = new TargetWindow(hwnd);
+
+            ////if window is found fire event
+            //if (predicate != null && predicate.Invoke(Window) == true)
+            //{
+            //    WindowFound(Window.Process, Window, (EventTypes)eventType);
+            //    predicate = null;
+            //    StopListening();
+            //}
+
+            if (GlobalWindowEvent != null)
             {
-                TargetWindow window = new TargetWindow(hwnd);
-
-                ////if window is found fire event
-                //if (predicate != null && predicate.Invoke(Window) == true)
-                //{
-                //    WindowFound(Window.Process, Window, (EventTypes)eventType);
-                //    predicate = null;
-                //    StopListening();
-                //}
-
-                if (GlobalWindowEvent != null)
-                {
-                    GlobalWindowEvent(window.Process, window, (WinApiAdditionalTypes.EventTypes)eventType);
-                }
+                GlobalWindowEvent(window.Process, window, (WinApiAdditionalTypes.EventTypes)eventType);
             }
         }
         public static void StopListening()
@@ -82,6 +82,18 @@ namespace TestWindow.WinAPIAndHooks
                 return true;
             }, 0);
             return lWindows;
+        }
+
+        public static double GetDisplayWidth()
+        {
+            WinApiAdditionalTypes.RECT desktop;
+            IntPtr hDesktop = WinApiFunctions.GetDesktopWindow();
+            WinApiFunctions.GetWindowRect(hDesktop, out desktop);
+            return desktop.right;
+        }
+        public static void MinimizeWindow()
+        {
+            WinApiFunctions.CloseWindow(_hwnd);
         }
     }
 

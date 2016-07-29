@@ -1,12 +1,14 @@
-﻿namespace TestWindow.WinAPIAndHooks
+﻿using System;
+
+namespace TestWindow.WinAPIAndHooks
 {
     internal class WinApiAdditionalTypes
     {
         public struct RECT
         {
             public int left;
-            public int right;
             public int top;
+            public int right;
             public int bottom;
         }
 
@@ -180,6 +182,8 @@
             ForceMinimized = 11
 
         }
+
+        [Flags]
         public enum SetWindowPosFlags : uint
         {
             /// <summary>

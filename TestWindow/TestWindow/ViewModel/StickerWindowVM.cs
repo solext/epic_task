@@ -1,36 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Windows;
 using TestWindow.Events;
 using TestWindow.WinAPIAndHooks;
 
 namespace TestWindow.ViewModel
 {
-    /// <summary>
-    /// /
-    /// </summary>
     public class StickerWindowVM : INotifyPropertyChanged
     {
         private TargetWindowEvents targetWindowEvents;
         private StickerWindowEvents stickerWindowEvents;
+        private bool _isTicked;
         public event PropertyChangedEventHandler PropertyChanged = delegate { };
 
         public Command UpdateAppsCmd { get; set; }
-
-        //private Window _StickerWindow { get; set; }
-        //public Window StickerWindow
-        //{
-        //    get
-        //    {
-        //        return _StickerWindow;
-        //    }
-        //    set
-        //    {
-        //        _StickerWindow = value; PropertyChanged(this, new PropertyChangedEventArgs("StickerWindow"));
-        //    }
-        //}
         public enum StickerPositionType
         {
             Left,
@@ -38,7 +22,7 @@ namespace TestWindow.ViewModel
         }
         private StickerPositionType _StickerPosition { get; set; }
 
-        public StickerPositionType StikerPosition
+        public StickerPositionType StickerPosition
         {
             get
             {
@@ -46,8 +30,16 @@ namespace TestWindow.ViewModel
             }
             set
             {
-                _StickerPosition = value; PropertyChanged(this, new PropertyChangedEventArgs("StikerPosition"));
-                stickerWindowEvents.StickToTargetWindow(_HWND, StikerPosition);
+                _StickerPosition = value;
+                PropertyChanged(this, new PropertyChangedEventArgs("StickerPosition"));
+                if (_HWND != IntPtr.Zero)
+                {
+                    WinApi.StartListening(_HWND);
+                    stickerWindowEvents.StickerPosition = StickerPosition;
+                    _isTicked = false;
+                    targetWindowEvents.LocationChange(_HWND, StickerPosition, _isTicked);
+                    _isTicked = true;
+                }
             }
         }
         private Dictionary<IntPtr, string> _RunningAps { get; set; }
@@ -62,19 +54,7 @@ namespace TestWindow.ViewModel
                 _RunningAps = value; PropertyChanged(this, new PropertyChangedEventArgs("RunningAps"));
             }
         }
-        private Process _SelectedProcess { get; set; }
-        public Process SelectedProcess
-        {
-            get
-            {
-                return _SelectedProcess;
-            }
-            set
-            {
-                _SelectedProcess = value; PropertyChanged(this, new PropertyChangedEventArgs("SelectedProcess"));
-            }
-        }
-        private IntPtr _HWND { get; set; }
+       private IntPtr _HWND { get; set; }
         public IntPtr HWND
         {
             get
@@ -85,17 +65,25 @@ namespace TestWindow.ViewModel
             {
                 _HWND = value;
                 PropertyChanged(this, new PropertyChangedEventArgs("HWND"));
-                stickerWindowEvents.StickToTargetWindow(_HWND, StikerPosition);
+                stickerWindowEvents.Hwnd = _HWND;
+                stickerWindowEvents.StickerPosition = StickerPosition;
                 WinApi.GlobalWindowEvent += Win32WindowEvents_GlobalWindowEvent;
                 WinApi.StartListening(_HWND);
+                targetWindowEvents.LocationChange(_HWND, StickerPosition,false);
+                _isTicked = true;
+
             }
         }
+
+        private Window a;
         public StickerWindowVM(Window stickerWindow)
         {
-            WindowEvents.InitializationStickerWindow(stickerWindow);
-            targetWindowEvents = new TargetWindowEvents();
-            stickerWindowEvents = new StickerWindowEvents();
+            a = stickerWindow;
+            targetWindowEvents = new TargetWindowEvents(stickerWindow);
+            stickerWindowEvents = new StickerWindowEvents(stickerWindow);
+            stickerWindow.LocationChanged += stickerWindowEvents.LocationChanged;
             stickerWindow.StateChanged += stickerWindowEvents.StateChange;
+            stickerWindow.SizeChanged += stickerWindowEvents.SizeChanged;
             RunningAps = new Dictionary<IntPtr, string>();
             UpdateAppsCmd = new Command(UpdateApps);
             UpdateApps(null);
@@ -104,13 +92,19 @@ namespace TestWindow.ViewModel
         private void Win32WindowEvents_GlobalWindowEvent(int process,
             TargetWindow window, WinApiAdditionalTypes.EventTypes type)
         {
-            //Console.WriteLine(type + "@ " + DateTime.Now.ToString("hh:mm.ss.fff") + window.ToString() + "\n");
             switch (type)
             {
-                case WinApiAdditionalTypes.EventTypes.EVENT_SYSTEM_MOVESIZEEND:
+                case WinApiAdditionalTypes.EventTypes.EVENT_OBJECT_LOCATIONCHANGE:
+                {
+                    a.LocationChanged -= stickerWindowEvents.LocationChanged;
+                    a.StateChanged -= stickerWindowEvents.StateChange;
+                    a.SizeChanged -= stickerWindowEvents.SizeChanged;
+                    targetWindowEvents.LocationChange(_HWND, StickerPosition, _isTicked);
+                    a.LocationChanged += stickerWindowEvents.LocationChanged;
+                    a.StateChanged += stickerWindowEvents.StateChange;
+                    a.SizeChanged += stickerWindowEvents.SizeChanged;
                     break;
-                case WinApiAdditionalTypes.EventTypes.EVENT_OBJECT_STATECHANGE:
-                    break;
+                }
                 case WinApiAdditionalTypes.EventTypes.EVENT_SYSTEM_MINIMIZESTART:
                     targetWindowEvents.MinimazeStart();
                     break;
@@ -122,14 +116,7 @@ namespace TestWindow.ViewModel
 
         private void UpdateApps(object obj)
         {
-            //Process[] MyProcess = Process.GetProcesses().OrderBy(x => x.ProcessName).Where(x => x.MainWindowHandle != IntPtr.Zero).ToArray();
-            //for (int i = 0; i < MyProcess.Length; i++)
-            //    RunningAps.Add(MyProcess[i].ProcessName);
-            RunningAps = WinApi.GetOpenWindows();
-
-            //comboBox1.SelectedIndexChanged += comboBox1_SelectedIndexChanged;
-            //treeView1.AfterSelect += treeView1_AfterSelect;
-            //comboBox1.SelectedIndex = 0;
+             RunningAps = WinApi.GetOpenWindows();
         }
     }
 }

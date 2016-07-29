@@ -6,7 +6,7 @@
         xmlns:l="clr-namespace:TestWindow.ViewModel"
         xmlns:local="clr-namespace:TestWindow.View"
         mc:Ignorable="d"
-        Title="StickerWindow" Height="300" Width="300" StateChanged="loc_StateChanged" >
+        Title="StickerWindow" Height="300" Width="300" MinWidth="300" MaxWidth="300" >
     <Grid>
         <Grid Margin="0,0,0,229">
             <ComboBox x:Name="AppsComboBox" VerticalAlignment="Top" DisplayMemberPath="Value" SelectedValuePath="Key" SelectedValue="{Binding HWND}" ItemsSource="{Binding RunningAps}" Margin="10,10,82,0" Height="20"/>
@@ -17,8 +17,8 @@
                 <l:EnumBooleanConverter x:Key="enumBooleanConverter" />
             </Grid.Resources>
             <StackPanel Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Center" >
-                <RadioButton IsChecked="{Binding Path=StikerPosition, Converter={StaticResource enumBooleanConverter}, ConverterParameter=Left}" HorizontalAlignment="Center" Margin="-10,0,0,0">Left</RadioButton>
-                <RadioButton IsChecked="{Binding Path=StikerPosition, Converter={StaticResource enumBooleanConverter}, ConverterParameter=Right}" Margin="20,0,0,0" HorizontalAlignment="Center">Right</RadioButton>
+                <RadioButton IsChecked="{Binding Path=StickerPosition, Converter={StaticResource enumBooleanConverter}, ConverterParameter=Left}" HorizontalAlignment="Center" Margin="-10,0,0,0">Left</RadioButton>
+                <RadioButton IsChecked="{Binding Path=StickerPosition, Converter={StaticResource enumBooleanConverter}, ConverterParameter=Right}" Margin="20,0,0,0" HorizontalAlignment="Center">Right</RadioButton>
             </StackPanel>
         </Grid>
         <Grid Margin="0,65,0,0">

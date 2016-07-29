@@ -4,7 +4,7 @@ namespace TestWindow.WinAPIAndHooks
 {
     internal class TargetWindow
     {
-        public IntPtr hWnd;
+        private IntPtr _hWnd;
 
         /// <summary>
         /// dgfvdsgfe
@@ -12,12 +12,15 @@ namespace TestWindow.WinAPIAndHooks
         /// <param name="hWnd"></param>
         public TargetWindow(IntPtr hWnd)
         {
-            this.hWnd = new IntPtr(hWnd.ToInt32());
+            _hWnd = new IntPtr(hWnd.ToInt32());
         }
 
         public int Width
         {
-            get { return Position.right - Position.left; }
+            get
+            {
+                return Position.right - Position.left;
+            }
         }
 
         public int Height
@@ -31,7 +34,7 @@ namespace TestWindow.WinAPIAndHooks
             get
             {
                 WinApiAdditionalTypes.RECT rect;
-                WinApiFunctions.GetWindowRect(hWnd, out rect);
+                WinApiFunctions.GetWindowRect(_hWnd, out rect);
                 return rect;
 
             }
@@ -44,7 +47,7 @@ namespace TestWindow.WinAPIAndHooks
             get
             {
                 int pid;
-                WinApiFunctions.GetWindowThreadProcessId(hWnd, out pid);
+                WinApiFunctions.GetWindowThreadProcessId(_hWnd, out pid);
                 return pid;
             }
         }
