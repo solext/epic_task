@@ -33,6 +33,17 @@ namespace TestWindow.Events
                     }
                     break;
                 }
+                case WindowState.Maximized:
+                    {
+                        _stickerWindow.LocationChanged -= this.LocationChanged;
+                        _stickerWindow.StateChanged -= this.StateChange;
+                        _stickerWindow.SizeChanged -= this.SizeChanged;
+                        LocationChangeMaximazed();
+                        _stickerWindow.LocationChanged += this.LocationChanged;
+                        _stickerWindow.StateChanged += this.StateChange;
+                        _stickerWindow.SizeChanged += this.SizeChanged;
+                        break;
+                    }
             }
         }
 
@@ -67,6 +78,32 @@ namespace TestWindow.Events
             }
             _stickerWindow.Height = targetWindow.Height;
         }
+        public void LocationChangeMaximazed()
+        {
+            _stickerWindow.WindowState = WindowState.Normal;
+            if (Hwnd == IntPtr.Zero) return;
+            TargetWindow targetWindow = new TargetWindow(Hwnd);
+            _stickerWindow.Height = WinApi.GetDisplayHight() - 30;
+            _stickerWindow.Top = 0;
+            if (StickerPosition == StickerWindowVM.StickerPositionType.Left)
+            {
+                _stickerWindow.Left = 0;
+                
+                double left = _stickerWindow.ActualWidth;
 
+                WinApiFunctions.SetWindowPos(Hwnd, 0, (int)left, (int)_stickerWindow.Top,
+                    (int)(WinApi.GetDisplayWidth() - left), (int)_stickerWindow.Height,
+                    (uint)WinApiAdditionalTypes.SetWindowPosFlags.SWP_NOACTIVATE);
+            }
+            else
+            {
+                _stickerWindow.Left = WinApi.GetDisplayWidth() - _stickerWindow.ActualWidth + 20;
+                double left = 0;
+                WinApiFunctions.SetWindowPos(Hwnd, 0, (int)left, (int)_stickerWindow.Top,
+                    (int)(WinApi.GetDisplayWidth() - _stickerWindow.ActualWidth + 20), (int)_stickerWindow.Height,
+                    (uint)WinApiAdditionalTypes.SetWindowPosFlags.SWP_NOACTIVATE);
+            }
+            
+        }
     }
 }

@@ -91,6 +91,13 @@ namespace TestWindow.WinAPIAndHooks
             WinApiFunctions.GetWindowRect(hDesktop, out desktop);
             return desktop.right;
         }
+        public static double GetDisplayHight()
+        {
+            WinApiAdditionalTypes.RECT desktop;
+            IntPtr hDesktop = WinApiFunctions.GetDesktopWindow();
+            WinApiFunctions.GetWindowRect(hDesktop, out desktop);
+            return desktop.bottom;
+        }
         public static void MinimizeWindow()
         {
             WinApiFunctions.CloseWindow(_hwnd);
