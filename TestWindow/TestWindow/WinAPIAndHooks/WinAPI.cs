@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Windows;
+using System.Windows.Interop;
 
 namespace TestWindow.WinAPIAndHooks
 {
     internal class WinApi
     {
-        static IntPtr _hhook;
+        static IntPtr _otherWindowHook;
+        static IntPtr _currentWindowHook;
         private static IntPtr _hwnd;
         static readonly WinApiFunctions.WinEventDelegate ProcDelegate = WinEventProc;
 
@@ -17,8 +20,8 @@ namespace TestWindow.WinAPIAndHooks
         {
             _hwnd = hwnd;
             TargetWindow window = new TargetWindow(hwnd);
-            if (_hhook != IntPtr.Zero) StopListening();
-            _hhook = WinApiFunctions.SetWinEventHook(
+            if (_otherWindowHook != IntPtr.Zero) StopListening();
+            _otherWindowHook = WinApiFunctions.SetWinEventHook(
                 (uint)WinApiAdditionalTypes.EventTypes.EVENT_MIN,
                 (uint)WinApiAdditionalTypes.EventTypes.EVENT_MAX,
                 IntPtr.Zero,
@@ -26,7 +29,16 @@ namespace TestWindow.WinAPIAndHooks
                 (uint)window.Process,
                 0,
                 (uint)(WinApiAdditionalTypes.WinHookParameter.OUTOFCONTEXT));
-           RestoreWindow();
+            TargetWindow currWin = new TargetWindow(new WindowInteropHelper(Application.Current.MainWindow).Handle);
+            _currentWindowHook = WinApiFunctions.SetWinEventHook(
+                (uint)WinApiAdditionalTypes.EventTypes.EVENT_SYSTEM_CAPTURESTART,
+                (uint)WinApiAdditionalTypes.EventTypes.EVENT_SYSTEM_CAPTUREEND,
+                IntPtr.Zero,
+                ProcDelegate,
+                (uint)currWin.Process,
+                0,
+                (uint)(WinApiAdditionalTypes.WinHookParameter.OUTOFCONTEXT));
+            RestoreWindow();
         }
 
         public static void RestoreWindow()
@@ -41,7 +53,7 @@ namespace TestWindow.WinAPIAndHooks
         }
         static void WinEventProc(IntPtr hWinEventHook, uint eventType, IntPtr hwnd, int idObject, int idChild, uint dwEventThread, uint dwmsEventTime)
         {
-            if (hwnd != _hwnd) return;
+            if (hwnd != _hwnd && hwnd != new WindowInteropHelper(Application.Current.MainWindow).Handle) return;
             var window = new TargetWindow(hwnd);
 
             ////if window is found fire event
@@ -59,7 +71,8 @@ namespace TestWindow.WinAPIAndHooks
         }
         public static void StopListening()
         {
-            WinApiFunctions.UnhookWinEvent(_hhook);
+            WinApiFunctions.UnhookWinEvent(_otherWindowHook);
+            WinApiFunctions.UnhookWinEvent(_currentWindowHook);
         }
 
         public static Dictionary<IntPtr, string> GetOpenWindows()
@@ -86,17 +99,13 @@ namespace TestWindow.WinAPIAndHooks
 
         public static double GetDisplayWidth()
         {
-            WinApiAdditionalTypes.RECT desktop;
-            IntPtr hDesktop = WinApiFunctions.GetDesktopWindow();
-            WinApiFunctions.GetWindowRect(hDesktop, out desktop);
-            return desktop.right;
+            var hDesktop = WinApiFunctions.GetDesktopWindow();
+            return System.Windows.Forms.Screen.FromHandle(hDesktop).WorkingArea.Width;
         }
         public static double GetDisplayHight()
         {
-            WinApiAdditionalTypes.RECT desktop;
-            IntPtr hDesktop = WinApiFunctions.GetDesktopWindow();
-            WinApiFunctions.GetWindowRect(hDesktop, out desktop);
-            return desktop.bottom;
+            var hDesktop = WinApiFunctions.GetDesktopWindow();
+            return System.Windows.Forms.Screen.FromHandle(hDesktop).WorkingArea.Height;
         }
         public static void MinimizeWindow()
         {
