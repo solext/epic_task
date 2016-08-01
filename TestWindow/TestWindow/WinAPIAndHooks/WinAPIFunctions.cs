@@ -24,6 +24,8 @@ namespace TestWindow.WinAPIAndHooks
         [DllImport("user32.dll")]
         public static extern bool GetWindowRect(IntPtr hWnd, out WinApiAdditionalTypes.RECT lpRec);
         [DllImport("user32.dll")]
+        public static extern long GetWindowLong(IntPtr hWnd, int index);
+        [DllImport("user32.dll")]
         public static extern bool GetClientRect(IntPtr hWnd, out WinApiAdditionalTypes.RECT lpRec);
 
         [DllImport("USER32.DLL")]
